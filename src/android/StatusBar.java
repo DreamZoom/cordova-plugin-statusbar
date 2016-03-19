@@ -161,5 +161,24 @@ public class StatusBar extends CordovaPlugin {
                 }
             }
         }
+        
+        if (android.os.Build.VERSION.SDK_INT > 18) {
+
+            final Window window =  cordova.getActivity().getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            // 创建状态栏的管理实例
+            SystemBarTintManager tintManager = new SystemBarTintManager(cordova.getActivity());
+            // 激活状态栏设置
+            tintManager.setStatusBarTintEnabled(true);
+            // 激活导航栏设置
+            tintManager.setNavigationBarTintEnabled(true);
+            // 设置一个颜色给系统栏
+            tintManager.setTintColor(Color.parseColor(colorPref));
+        }
     }
 }
