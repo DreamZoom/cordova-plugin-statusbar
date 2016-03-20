@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -48,6 +49,21 @@ public class StatusBar extends CordovaPlugin {
     @Override
     public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
         Log.v(TAG, "StatusBar: initialization");
+
+        if (android.os.Build.VERSION.SDK_INT > 18 && android.os.Build.VERSION.SDK_INT < 21) {
+            final Window window = cordova.getActivity().getWindow();
+
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+            ViewGroup.MarginLayoutParams l = (ViewGroup.MarginLayoutParams) webView.getView().getLayoutParams();
+            l.setMargins(0, 50, 0, 0);
+            webView.getView().setLayoutParams(l);
+        }
         super.initialize(cordova, webView);
 
         this.cordova.getActivity().runOnUiThread(new Runnable() {
@@ -162,15 +178,7 @@ public class StatusBar extends CordovaPlugin {
             }
         }
         
-        if (android.os.Build.VERSION.SDK_INT > 18) {
-
-            final Window window =  cordova.getActivity().getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            window.setFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        if (android.os.Build.VERSION.SDK_INT > 18 && android.os.Build.VERSION.SDK_INT < 21) {
             // 创建状态栏的管理实例
             SystemBarTintManager tintManager = new SystemBarTintManager(cordova.getActivity());
             // 激活状态栏设置
